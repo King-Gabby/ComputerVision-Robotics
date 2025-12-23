@@ -10,7 +10,7 @@ Features;
 
 Real-time hand detection
 Fingers recognition
-Drag and release
+Pinch and drag (virtual)
 Stable landmark tracking
 FPS counter
 Ideal structure for expansion
