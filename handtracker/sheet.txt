@@ -1,0 +1,37 @@
+0  → Wrist
+4  → Thumb tip
+8  → Index finger tip
+12 → Middle finger tip
+16 → Ring finger tip
+20 → Pinky tip
+
+
+Features;
+
+Real-time hand detection
+Stable landmark tracking
+FPS counter
+Ideal structure for expansion
+
+
+#finger counting
+Thumb tip      → 4
+Index tip      → 8
+Middle tip     → 12
+Ring tip       → 16
+Pinky tip      → 20
+
+Index PIP      → 6
+Middle PIP     → 10
+Ring PIP       → 14
+Pinky PIP      → 18
+
+
+
+| Finger | Tip ID | PIP ID             
+| ------ | ------ | ------------------ 
+| Thumb  | 4      | 3 
+| Index  | 8      | 6                  
+| Middle | 12     | 10                 
+| Ring   | 16     | 14                 
+| Pinky  | 20     | 18                 
