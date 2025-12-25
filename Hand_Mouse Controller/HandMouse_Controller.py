@@ -11,16 +11,17 @@ pyautogui.FAILSAFE = True
 def distance(p1, p2):
     return math.hypot(p2[0] - p1[0], p2[1] - p1[1])
 
-# MediaPipe
+#mediapipe
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(
     static_image_mode=False,
-    max_num_hands=2,
+    max_num_hands=1,
     min_detection_confidence=0.7,
     min_tracking_confidence=0.7
 )
 mp_draw = mp.solutions.drawing_utils
 
+#finger config
 FINGERS = {
     "Index": (8, 6),
     "Middle": (12, 10),
@@ -28,23 +29,27 @@ FINGERS = {
     "Pinky": (20, 18)
 }
 
-# Config
 PINCH_THRESHOLD = 40
-SCROLL_SPEED = 30
 SMOOTHING = 6
-GESTURE_WINDOW = 7
-prev_scroll_y = None
-SCROLL_SENSITIVITY = 1.5
 SCROLL_DEADZONE = 5
+SCROLL_SENSITIVITY = 1.2
+
+CLICK_DEBOUNCE = 0.4
+DRAG_START_DISTANCE = 15
+GESTURE_WINDOW = 7
 
 SCREEN_W, SCREEN_H = pyautogui.size()
+
 prev_x, prev_y = 0, 0
-mouse_down = False
+prev_scroll_y = None
 
 gesture_history = deque(maxlen=GESTURE_WINDOW)
-calibration_mode = False
 
-# Gesture logging
+pinch_active = False
+pinch_start_pos = None
+dragging = False
+last_click_time = 0
+
 log_file = open("gesture_log.csv", "w", newline="")
 logger = csv.writer(log_file)
 logger.writerow(["timestamp", "gesture"])
@@ -71,9 +76,9 @@ def detect_gesture(landmarks):
     up = fingers_up(landmarks)
 
     if pinch_index < PINCH_THRESHOLD:
-        return "PINCH"
+        return "PINCH_INDEX"
     elif pinch_middle < PINCH_THRESHOLD:
-        return "RIGHT_CLICK"
+        return "PINCH_MIDDLE"
     elif up == ["Index", "Middle"]:
         return "SCROLL"
     elif up == ["Index"]:
@@ -81,8 +86,9 @@ def detect_gesture(landmarks):
     else:
         return "NONE"
 
+#cam
 cap = cv.VideoCapture(0)
-prev_time = 0
+prev_time = time.time()
 
 while cap.isOpened():
     success, frame = cap.read()
@@ -94,19 +100,17 @@ while cap.isOpened():
     result = hands.process(rgb)
 
     if result.multi_hand_landmarks:
-        hand = result.multi_hand_landmarks[0]  # Primary hand only
+        hand = result.multi_hand_landmarks[0]
         mp_draw.draw_landmarks(frame, hand, mp_hands.HAND_CONNECTIONS)
 
         h, w, _ = frame.shape
         landmarks = {}
 
-        for id, lm in enumerate(hand.landmark):
-            cx, cy = int(lm.x * w), int(lm.y * h)
-            landmarks[id] = (cx, cy)
+        for i, lm in enumerate(hand.landmark):
+            landmarks[i] = (int(lm.x * w), int(lm.y * h))
 
         raw_gesture = detect_gesture(landmarks)
         gesture = smooth_gesture(raw_gesture)
-
         logger.writerow([time.time(), gesture])
 
         index_x, index_y = landmarks[8]
@@ -116,49 +120,73 @@ while cap.isOpened():
         curr_x = prev_x + (screen_x - prev_x) / SMOOTHING
         curr_y = prev_y + (screen_y - prev_y) / SMOOTHING
 
-        # ACTION LAYER
-        if gesture == "POINT":
+        now = time.time()
+
+
+        #cursor move
+        if gesture == "POINT" and not pinch_active:
             pyautogui.moveTo(curr_x, curr_y)
             prev_x, prev_y = curr_x, curr_y
 
-        elif gesture == "PINCH":
-            if not mouse_down:
-                pyautogui.mouseDown()
-                mouse_down = True
-            pyautogui.moveTo(curr_x, curr_y)
-            prev_x, prev_y = curr_x, curr_y
+        #the left pinch drag and click
+        elif gesture == "PINCH_INDEX":
+            if not pinch_active:
+                pinch_active = True
+                pinch_start_pos = (curr_x, curr_y)
+            else:
+                dx = curr_x - pinch_start_pos[0]
+                dy = curr_y - pinch_start_pos[1]
+                move_dist = math.hypot(dx, dy)
 
+                if move_dist > DRAG_START_DISTANCE:
+                    if not dragging:
+                        pyautogui.mouseDown()
+                        dragging = True
+                        print("Drag Start")
+
+                    pyautogui.moveTo(curr_x, curr_y)
+                    prev_x, prev_y = curr_x, curr_y
+
+        #release
         else:
-            if mouse_down:
+            if dragging:
                 pyautogui.mouseUp()
-                mouse_down = False
+                dragging = False
+                print("Drag End")
 
-        if gesture == "RIGHT_CLICK":
-            pyautogui.click(button="right")
-            time.sleep(0.3)  # debounce
+            if pinch_active:
+                if now - last_click_time > CLICK_DEBOUNCE:
+                    pyautogui.click()
+                    last_click_time = now
+                    print("Click")
 
+            pinch_active = False
+            pinch_start_pos = None
+
+        #right click
+        if gesture == "PINCH_MIDDLE":
+            if now - last_click_time > CLICK_DEBOUNCE:
+                pyautogui.click(button="right")
+                last_click_time = now
+                print("Right Click")
+
+        #scroll
         if gesture == "SCROLL":
             if prev_scroll_y is None:
                 prev_scroll_y = index_y
             else:
-                dy = prev_scroll_y - index_y  # inverted (natural scroll)
-
+                dy = prev_scroll_y - index_y
                 if abs(dy) > SCROLL_DEADZONE:
-                    scroll_amount = int(dy * SCROLL_SENSITIVITY)
-                    pyautogui.scroll(scroll_amount)
-
+                    pyautogui.scroll(int(dy * SCROLL_SENSITIVITY))
                 prev_scroll_y = index_y
-
-            cv.putText(frame, "SCROLLING", (10, 160),
-               cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 3)
         else:
             prev_scroll_y = None
 
-
+        #ui
         cv.putText(frame, f"Gesture: {gesture}", (10, 120),
                    cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 3)
 
-    # FPS
+    #fps
     curr_time = time.time()
     fps = int(1 / (curr_time - prev_time)) if curr_time != prev_time else 0
     prev_time = curr_time
@@ -166,14 +194,10 @@ while cap.isOpened():
     cv.putText(frame, f"FPS: {fps}", (10, 40),
                cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
-    cv.imshow("Hand OS Controller", frame)
+    cv.imshow("Hand OS Controller by Gabriel", frame)
 
-    key = cv.waitKey(1) & 0xFF
-    if key == ord('k'):
+    if cv.waitKey(1) & 0xFF == ord('k'):
         break
-    if key == ord('c'):
-        calibration_mode = not calibration_mode
-        print("Calibration toggled")
 
 cap.release()
 log_file.close()
