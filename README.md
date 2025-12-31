@@ -27,8 +27,10 @@ This repository features two main projects:
 
 
 ### How to RUN
--- `Hand Tracker full demo` -- cd hand_tracker
-                               python full_handtracker_demo.py
+-- `Hand Tracker full demo` 
+cd hand_tracker
+python full_handtracker_demo.py
+
 -- `Hand Tracker modular demo` -- cd hand_tracker
                                    python demo.py
 -- `Hand Mouse Controller` -- cd hand_mouse_controller
