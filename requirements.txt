@@ -1,0 +1,7 @@
+Python 3.9+
+OpenCV (pip install opencv-python)
+MediaPipe (pip install mediapipe)
+PyAutoGUI (pip install pyautogui)
+
+
+Your profound focus and intuition...
