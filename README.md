@@ -25,6 +25,28 @@ This repository features two main projects:
 - `gestures.py` – gesture detection engine
 - `demo.py` – modular demo combining tracker + gestures
 
+
+### How to RUN
+-- Hand Tracker full demo
+    'cd hand_tracker'
+    'python full_handtracker_demo.py'
+-- Hand Tracker modular demo
+  'cd hand_tracker'
+   'python demo.py'
+-- Hand Mouse Controller
+  'cd hand_mouse_controller'
+  'python controller.py'
+  
+
+## Note:
+Make sure Python 3.9+ is installed
+
+Install dependencies:
+pip install -r requirements.txt
+Press k to exit the demo windows
+
+
+
 ### Usage (Modular)
 ```python
 from hand_tracker.tracker import extract_landmarks
@@ -33,3 +55,6 @@ from hand_tracker.gestures import detect_gesture
 # Capture frame from camera
 landmarks, frame = extract_landmarks(frame)
 gesture = detect_gesture(landmarks)
+
+
+
