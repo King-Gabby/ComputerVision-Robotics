@@ -1,3 +1,5 @@
+# AI & Computer Vision Engineer | Machine Learning | Deep Learning | Robotics
+
 # ComputerVision-Robotics
 
 A collection of computer vision projects for **hand gesture recognition and control**.
@@ -42,6 +44,98 @@ Make sure Python 3.9+ is installed
 Install dependencies:
 pip install -r requirements.txt
 Press k to exit the demo windows
+
+
+About Me
+
+AI & Computer Vision Engineer specializing in Machine Learning, Deep Learning, and intelligent system design.
+
+I build scalable AI systems that transform visual and structured data into actionable intelligence. My work focuses on real-world deployment, from model development and optimization to production-ready architectures.
+
+Core interests:
+
+Computer Vision & Robotic Perception
+
+Applied Machine Learning
+
+Intelligent Automation Systems
+
+Real-time Inference & Optimization
+
+AI System Architecture
+
+I approach engineering with precision, clarity, and long-term scalability in mind.
+
+
+
+What I Build
+
+I design and develop:
+
+Computer Vision pipelines for object detection, tracking, and pose estimation
+
+Deep Learning models for perception and decision-making systems
+
+Real-time AI inference systems optimized for performance
+
+Robotics-integrated vision systems
+
+Intelligent applications powered by LLMs and multimodal AI
+
+End-to-end machine learning workflows (data → model → deployment)
+
+I prioritize:
+
+Clean architecture
+
+Reproducibility
+
+Performance efficiency
+
+Production-grade standards
+
+
+Tech Stack
+
+Languages
+
+Python
+
+C++
+
+SQL
+
+AI & Machine Learning
+
+PyTorch
+
+TensorFlow
+
+Scikit-learn
+
+OpenCV
+
+Hugging Face
+
+Robotics & Vision
+
+ROS
+
+Camera calibration & sensor fusion
+
+Real-time perception systems
+
+Deployment & Infrastructure
+
+FastAPI
+
+Docker
+
+Linux
+
+Git
+
+Cloud deployment workflows
 
 
 
