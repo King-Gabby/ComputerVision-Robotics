@@ -47,13 +47,13 @@ Press k to exit the demo windows
 
 
 
-### About Me
+### About Me:
 
 AI & Computer Vision Engineer specializing in Machine Learning, Deep Learning, and intelligent system design.
 
 I build scalable AI systems that transform visual and structured data into actionable intelligence. My work focuses on real-world deployment, from model development and optimization to production-ready architectures.
 
-Core interests:
+# Core interests:
 
 Computer Vision & Robotic Perception
 
@@ -69,7 +69,7 @@ I approach engineering with precision, clarity, and long-term scalability in min
 
 
 
-### What I Build
+### What I Build:
 
 I design and develop:
 
@@ -96,7 +96,7 @@ Performance efficiency
 Production-grade standards
 
 
-### Tech Stack
+### Tech Stack:
 
 Languages
 
