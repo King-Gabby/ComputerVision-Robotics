@@ -46,7 +46,8 @@ pip install -r requirements.txt
 Press k to exit the demo windows
 
 
-About Me
+
+# About Me
 
 AI & Computer Vision Engineer specializing in Machine Learning, Deep Learning, and intelligent system design.
 
@@ -68,7 +69,7 @@ I approach engineering with precision, clarity, and long-term scalability in min
 
 
 
-What I Build
+# What I Build
 
 I design and develop:
 
@@ -95,7 +96,7 @@ Performance efficiency
 Production-grade standards
 
 
-Tech Stack
+# Tech Stack
 
 Languages
 
